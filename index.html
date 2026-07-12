@@ -11,180 +11,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Malik Ben App">
-<link rel="apple-touch-icon" href="icon.svg">
-<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --violet-1:#0B0518;
-    --violet-2:#1D0F3D;
-    --violet-3:#2A1458;
-    --pink:#FF3D7F;
-    --pink-soft:#FF7AA8;
-    --cyan:#00E5C7;
-    --cyan-soft:#5FF2DE;
-    --glass:rgba(255,255,255,0.06);
-    --glass-brd:rgba(255,255,255,0.12);
-    --text:#FFFFFF;
-    --text-dim:#B3A9D6;
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{ height:100%; }
-  body{
-    margin:0;
-    background:var(--violet-1);
-    color:var(--text);
-    font-family:'Cairo',sans-serif;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    overflow:hidden;
-    position:relative;
-  }
-
-  .mesh{ position:fixed; inset:-10%; z-index:0; filter:blur(60px); opacity:0.75; }
-  .blob{ position:absolute; width:46vmax; height:46vmax; border-radius:50%; mix-blend-mode:screen; }
-  .blob-1{ background:radial-gradient(circle, var(--pink), transparent 65%); top:-10%; right:-10%; animation:float1 16s ease-in-out infinite; }
-  .blob-2{ background:radial-gradient(circle, var(--cyan), transparent 65%); bottom:-15%; left:-15%; animation:float2 20s ease-in-out infinite; }
-  .blob-3{ background:radial-gradient(circle, var(--violet-3), transparent 60%); top:30%; left:20%; animation:float3 24s ease-in-out infinite; }
-  @keyframes float1{ 0%,100%{ transform:translate(0,0) scale(1);} 50%{ transform:translate(-8%,10%) scale(1.1);} }
-  @keyframes float2{ 0%,100%{ transform:translate(0,0) scale(1);} 50%{ transform:translate(10%,-8%) scale(1.08);} }
-  @keyframes float3{ 0%,100%{ transform:translate(0,0) scale(1);} 50%{ transform:translate(-6%,-10%) scale(0.95);} }
-
-  .app{
-    position:relative; z-index:1; width:100%; max-width:400px;
-    display:flex; flex-direction:column; align-items:center; gap:18px;
-  }
-
-  .topbar{ width:100%; display:flex; align-items:center; justify-content:space-between; }
-  .header{ text-align:center; flex:1; }
-  .brand{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:10px;
-    font-weight:700;
-    letter-spacing:3px;
-    color:var(--text-dim);
-    opacity:0.7;
-    margin-bottom:2px;
-  }
-  .header h1{ margin:0; font-size:19px; font-weight:800; letter-spacing:0.3px; }
-  .header p{ margin:2px 0 0; color:var(--text-dim); font-size:12px; font-weight:400; }
-
-  .icon-btn{
-    width:40px; height:40px; border-radius:50%;
-    background:var(--glass); border:1px solid var(--glass-brd);
-    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer; flex-shrink:0;
-    transition:transform 0.12s ease, background 0.15s ease;
-  }
-  .icon-btn:active{ transform:scale(0.92); background:rgba(255,255,255,0.14); }
-  .icon-btn svg{ width:18px; height:18px; }
-  .topbar-actions{ display:flex; gap:8px; }
-
-  .ring-wrap{
-    position:relative; width:270px; height:270px; border-radius:50%;
-    background:var(--glass); border:1px solid var(--glass-brd);
-    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    box-shadow:0 20px 60px -20px rgba(255,61,127,0.35), 0 0 0 1px rgba(255,255,255,0.03) inset;
-  }
-  svg.ringsvg{ transform:rotate(-90deg); position:relative; z-index:1; }
-  .track{ fill:none; stroke:rgba(255,255,255,0.07); stroke-width:12; }
-  .progress{
-    fill:none; stroke-width:12; stroke-linecap:round;
-    transition:stroke-dashoffset 1s linear, stroke 0.5s ease;
-    filter:drop-shadow(0 0 14px currentColor);
-  }
-  .ring-center{
-    position:absolute; inset:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:4px; z-index:2;
-  }
-  .phase-label{
-    font-family:'Cairo',sans-serif; font-weight:700; font-size:13px;
-    letter-spacing:4px; text-transform:uppercase; color:var(--text-dim);
-  }
-  .time-display{
-    font-family:'Space Grotesk',sans-serif; font-size:60px; font-weight:700;
-    font-variant-numeric:tabular-nums; line-height:1;
-    background:linear-gradient(135deg, #fff, #E8E0FF);
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  }
-  .round-label{ color:var(--text-dim); font-size:12px; font-weight:600; }
-
-  .presets{ width:100%; display:flex; gap:8px; }
-  .chip{
-    flex:1; padding:10px 6px; border-radius:100px; border:1px solid var(--glass-brd);
-    background:var(--glass); color:var(--text-dim); font-family:'Cairo',sans-serif;
-    font-weight:700; font-size:11.5px; cursor:pointer; backdrop-filter:blur(12px);
-    transition:transform 0.1s ease, color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-  }
-  .chip:active{ transform:scale(0.95); }
-  .chip.active{ color:#fff; border-color:transparent; background:linear-gradient(120deg, var(--pink), var(--cyan)); }
-
-  .controls{
-    width:100%; background:var(--glass); border:1px solid var(--glass-brd);
-    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    border-radius:22px; padding:18px 20px; display:flex; flex-direction:column; gap:14px;
-  }
-  .field{ display:flex; align-items:center; justify-content:space-between; }
-  .field label{ font-size:13px; color:var(--text-dim); font-weight:600; }
-  .stepper{ display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.04); border-radius:100px; padding:4px; }
-  .stepper button{
-    width:28px; height:28px; border-radius:50%; border:none; background:rgba(255,255,255,0.10);
-    color:var(--text); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:background 0.15s ease, transform 0.1s ease;
-  }
-  .stepper button:active{ transform:scale(0.9); background:rgba(255,255,255,0.18); }
-  .stepper span{ min-width:34px; text-align:center; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; }
-
-  .actions{ display:flex; gap:12px; width:100%; }
-  .btn{
-    flex:1; padding:15px; border-radius:100px; border:none; font-family:'Cairo',sans-serif;
-    font-weight:700; font-size:15px; cursor:pointer; transition:transform 0.12s ease, opacity 0.12s ease;
-  }
-  .btn:active{ transform:scale(0.97); }
-  .btn-start{ background:linear-gradient(120deg, var(--pink), #FF6FA0); color:#fff; box-shadow:0 8px 24px -6px rgba(255,61,127,0.6); }
-  .btn-pause{ background:linear-gradient(120deg, var(--cyan), var(--cyan-soft)); color:#012823; box-shadow:0 8px 24px -6px rgba(0,229,199,0.5); }
-  .btn-reset{ background:var(--glass); border:1px solid var(--glass-brd); color:var(--text-dim); backdrop-filter:blur(12px); }
-
-  /* settings sheet */
-  .overlay{
-    position:fixed; inset:0; background:rgba(5,2,12,0.55); backdrop-filter:blur(4px);
-    display:flex; align-items:flex-end; justify-content:center; z-index:10;
-    opacity:0; pointer-events:none; transition:opacity 0.25s ease;
-  }
-  .overlay.open{ opacity:1; pointer-events:auto; }
-  .sheet{
-    width:100%; max-width:400px; background:linear-gradient(180deg, #1D1038, #14092B);
-    border:1px solid var(--glass-brd); border-bottom:none;
-    border-radius:26px 26px 0 0; padding:22px 22px 28px; transform:translateY(100%);
-    transition:transform 0.3s cubic-bezier(.2,.9,.25,1);
-  }
-  .overlay.open .sheet{ transform:translateY(0); }
-  .sheet-handle{ width:36px; height:4px; border-radius:4px; background:rgba(255,255,255,0.25); margin:0 auto 16px; }
-  .sheet-title{ font-size:16px; font-weight:800; margin:0 0 16px; text-align:center; }
-  .sheet-section{ margin-bottom:18px; }
-  .sheet-label{ font-size:12px; color:var(--text-dim); font-weight:700; margin-bottom:8px; letter-spacing:1px; text-transform:uppercase; }
-  .row-chips{ display:flex; gap:8px; }
-  .row-chips .chip{ flex:1; padding:12px 6px; font-size:13px; }
-  .install-hint{
-    font-size:11.5px; color:var(--text-dim); line-height:1.6; text-align:center;
-    background:rgba(255,255,255,0.04); border-radius:14px; padding:12px; margin-top:6px;
-  }
-  .sheet-close{
-    width:100%; margin-top:16px; padding:14px; border-radius:100px; border:none;
-    background:var(--glass); border:1px solid var(--glass-brd); color:var(--text); font-family:'Cairo',sans-serif;
-    font-weight:700; font-size:14px; cursor:pointer;
-  }
-</style>
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<div class="mesh">
+<div class="mesh" id="meshBg" aria-hidden="true">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
   <div class="blob blob-3"></div>
@@ -193,84 +29,160 @@
 <div class="app">
   <div class="topbar">
     <div class="topbar-actions">
-      <div class="icon-btn" onclick="openSettings()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-      </div>
+      </button>
     </div>
     <div class="header">
-      <div class="brand">MALIK BEN APP</div>
+      <div class="brand" id="brandText">MALIK BEN APP</div>
       <h1 id="titleText">مؤقت الكارديو</h1>
       <p id="subtitleText">تمرين · راحة · تكرار</p>
     </div>
-    <div class="icon-btn" id="soundToggle" onclick="toggleAudio()">
-      <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button class="icon-btn" id="soundToggle" aria-label="Toggle sound" aria-pressed="true">
+      <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
       </svg>
-      <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <line x1="23" y1="9" x2="17" y2="15"></line>
         <line x1="17" y1="9" x2="23" y2="15"></line>
       </svg>
-    </div>
+    </button>
   </div>
 
-  <div class="ring-wrap">
-    <svg class="ringsvg" width="270" height="270" viewBox="0 0 270 270">
-      <circle class="track" cx="135" cy="135" r="120"></circle>
-      <circle id="progressRing" class="progress" cx="135" cy="135" r="120" stroke="#B3A9D6"></circle>
-    </svg>
-    <div class="ring-center">
-      <div id="phaseLabel" class="phase-label">جاهز</div>
-      <div id="timeDisplay" class="time-display">00:30</div>
-      <div id="roundLabel" class="round-label">الجولة 1 من 5</div>
-    </div>
-  </div>
+  <!-- screen-reader live region: announces phase/time changes without visual clutter -->
+  <div id="liveRegion" class="sr-only" aria-live="polite" role="status"></div>
 
-  <div class="presets">
-    <button class="chip" id="presetTabata" onclick="applyPreset(20,10,8)">تاباتا 20/10</button>
-    <button class="chip" id="presetStandard" onclick="applyPreset(30,15,5)">قياسي 30/15</button>
-    <button class="chip" id="presetEndurance" onclick="applyPreset(45,15,6)">تحمّل 45/15</button>
-  </div>
-
-  <div class="controls">
-    <div class="field">
-      <div class="stepper">
-        <button onclick="adjust('work',-5)">−</button>
-        <span id="workVal">30</span>
-        <button onclick="adjust('work',5)">+</button>
+  <!-- ================= TIMER VIEW ================= -->
+  <main id="view-timer" class="view">
+    <div class="ring-wrap">
+      <svg class="ringsvg" width="270" height="270" viewBox="0 0 270 270" aria-hidden="true">
+        <circle class="track" cx="135" cy="135" r="120"></circle>
+        <circle id="progressRing" class="progress" cx="135" cy="135" r="120" stroke="#B3A9D6"></circle>
+      </svg>
+      <div class="ring-center">
+        <div id="phaseLabel" class="phase-label">جاهز</div>
+        <div id="timeDisplay" class="time-display">00:30</div>
+        <div id="roundLabel" class="round-label">الجولة 1 من 5</div>
       </div>
-      <label id="workLabelText">ثانية التمرين</label>
     </div>
-    <div class="field">
-      <div class="stepper">
-        <button onclick="adjust('rest',-5)">−</button>
-        <span id="restVal">15</span>
-        <button onclick="adjust('rest',5)">+</button>
-      </div>
-      <label id="restLabelText">ثانية الراحة</label>
-    </div>
-    <div class="field">
-      <div class="stepper">
-        <button onclick="adjust('rounds',-1)">−</button>
-        <span id="roundsVal">5</span>
-        <button onclick="adjust('rounds',1)">+</button>
-      </div>
-      <label id="roundsLabelText">عدد الجولات</label>
-    </div>
-  </div>
 
-  <div class="actions">
-    <button id="startBtn" class="btn btn-start" onclick="toggleStart()">ابدأ</button>
-    <button id="resetBtn" class="btn btn-reset" onclick="resetTimer()">إعادة</button>
-  </div>
+    <div class="presets">
+      <button class="chip" id="presetTabata" data-work="20" data-rest="10" data-rounds="8">تاباتا 20/10</button>
+      <button class="chip" id="presetStandard" data-work="30" data-rest="15" data-rounds="5">قياسي 30/15</button>
+      <button class="chip" id="presetEndurance" data-work="45" data-rest="15" data-rounds="6">تحمّل 45/15</button>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <div class="stepper">
+          <button data-adjust="work" data-delta="-5" aria-label="decrease work seconds">−</button>
+          <span id="workVal">30</span>
+          <button data-adjust="work" data-delta="5" aria-label="increase work seconds">+</button>
+        </div>
+        <label id="workLabelText">ثانية التمرين</label>
+      </div>
+      <div class="field">
+        <div class="stepper">
+          <button data-adjust="rest" data-delta="-5" aria-label="decrease rest seconds">−</button>
+          <span id="restVal">15</span>
+          <button data-adjust="rest" data-delta="5" aria-label="increase rest seconds">+</button>
+        </div>
+        <label id="restLabelText">ثانية الراحة</label>
+      </div>
+      <div class="field">
+        <div class="stepper">
+          <button data-adjust="rounds" data-delta="-1" aria-label="decrease rounds">−</button>
+          <span id="roundsVal">5</span>
+          <button data-adjust="rounds" data-delta="1" aria-label="increase rounds">+</button>
+        </div>
+        <label id="roundsLabelText">عدد الجولات</label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="startBtn" class="btn btn-start">ابدأ</button>
+      <button id="resetBtn" class="btn btn-reset">إعادة</button>
+    </div>
+  </main>
+
+  <!-- ================= HISTORY VIEW ================= -->
+  <main id="view-history" class="view" hidden>
+    <h2 class="view-title" id="historyTitleText">سجلّ التمارين</h2>
+    <div class="stat-grid">
+      <div class="stat-card"><span class="stat-num" id="statTotal">0</span><span class="stat-label" id="statTotalLabel">مجموع الجلسات</span></div>
+      <div class="stat-card"><span class="stat-num" id="statStreak">0</span><span class="stat-label" id="statStreakLabel">التتابع الحالي</span></div>
+      <div class="stat-card"><span class="stat-num" id="statBest">0</span><span class="stat-label" id="statBestLabel">أفضل تتابع</span></div>
+      <div class="stat-card"><span class="stat-num" id="statCalories">0</span><span class="stat-label" id="statCaloriesLabel">سعرات تقديرية</span></div>
+    </div>
+    <div class="week-chart" id="weekChartLabel">
+      <div class="week-bars" id="weekBars"></div>
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </main>
+
+  <!-- ================= BUILDER VIEW ================= -->
+  <main id="view-builder" class="view" hidden>
+    <h2 class="view-title" id="builderTitleText">ابنِ تمرينك</h2>
+    <div class="controls">
+      <div class="field-col">
+        <label id="builderNameLabel" for="builderNameInput">اسم التمرين</label>
+        <input type="text" id="builderNameInput" class="text-input" placeholder="مثال: تمريني الصباحي">
+      </div>
+      <div class="field">
+        <div class="stepper">
+          <button data-badjust="work" data-delta="-5" aria-label="decrease">−</button>
+          <span id="bWorkVal">30</span>
+          <button data-badjust="work" data-delta="5" aria-label="increase">+</button>
+        </div>
+        <label id="bWorkLabelText">ثانية التمرين</label>
+      </div>
+      <div class="field">
+        <div class="stepper">
+          <button data-badjust="rest" data-delta="-5" aria-label="decrease">−</button>
+          <span id="bRestVal">15</span>
+          <button data-badjust="rest" data-delta="5" aria-label="increase">+</button>
+        </div>
+        <label id="bRestLabelText">ثانية الراحة</label>
+      </div>
+      <div class="field">
+        <div class="stepper">
+          <button data-badjust="rounds" data-delta="-1" aria-label="decrease">−</button>
+          <span id="bRoundsVal">5</span>
+          <button data-badjust="rounds" data-delta="1" aria-label="increase">+</button>
+        </div>
+        <label id="bRoundsLabelText">عدد الجولات</label>
+      </div>
+    </div>
+    <button id="builderSaveBtn" class="btn btn-start" style="width:100%">حفظ التمرين</button>
+
+    <h3 class="sub-title" id="builderSavedTitle">تماريني المحفوظة</h3>
+    <div id="builderList" class="builder-list"></div>
+  </main>
+
+  <!-- bottom tab navigation -->
+  <nav class="tabbar" role="tablist" aria-label="Navigation">
+    <button class="tab-btn active" id="tabTimer" role="tab" aria-selected="true" data-view="timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M5 3 2 6"></path><path d="M22 6 19 3"></path></svg>
+      <span id="navTimerText">المؤقت</span>
+    </button>
+    <button class="tab-btn" id="tabHistory" role="tab" aria-selected="false" data-view="history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
+      <span id="navHistoryText">السجلّ</span>
+    </button>
+    <button class="tab-btn" id="tabBuilder" role="tab" aria-selected="false" data-view="builder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      <span id="navBuilderText">تماريني</span>
+    </button>
+  </nav>
 </div>
 
-<div class="overlay" id="settingsOverlay" onclick="closeSettingsOnOverlay(event)">
+<div class="overlay" id="settingsOverlay" role="dialog" aria-modal="true">
   <div class="sheet">
     <div class="sheet-handle"></div>
     <h3 class="sheet-title" id="settingsTitleText">الإعدادات</h3>
@@ -278,454 +190,45 @@
     <div class="sheet-section">
       <div class="sheet-label" id="languageLabelText">اللغة</div>
       <div class="row-chips">
-        <button class="chip" id="langAr" onclick="setLanguage('ar')">العربية</button>
-        <button class="chip" id="langFr" onclick="setLanguage('fr')">Français</button>
-        <button class="chip" id="langEn" onclick="setLanguage('en')">English</button>
+        <button class="chip" id="langAr" data-lang="ar">العربية</button>
+        <button class="chip" id="langFr" data-lang="fr">Français</button>
+        <button class="chip" id="langEn" data-lang="en">English</button>
       </div>
     </div>
 
     <div class="sheet-section">
       <div class="sheet-label" id="musicLabelText">الموسيقى التحفيزية</div>
       <div class="row-chips">
-        <button class="chip" id="musicEnergy" onclick="setMusicStyle('energy')">طاقة</button>
-        <button class="chip" id="musicRock" onclick="setMusicStyle('rock')">روك</button>
-        <button class="chip" id="musicOff" onclick="setMusicStyle('off')">إيقاف</button>
+        <button class="chip" id="musicEnergy" data-music="energy">طاقة</button>
+        <button class="chip" id="musicRock" data-music="rock">روك</button>
+        <button class="chip" id="musicOff" data-music="off">إيقاف</button>
+      </div>
+    </div>
+
+    <div class="sheet-section">
+      <div class="sheet-label" id="motionLabelText">تقليل الحركة</div>
+      <div class="row-chips">
+        <button class="chip" id="motionOn" data-motion="on">مفعّل</button>
+        <button class="chip" id="motionOff" data-motion="off">معطّل</button>
+      </div>
+    </div>
+
+    <div class="sheet-section">
+      <div class="sheet-label" id="hapticsLabelText">الاهتزاز</div>
+      <div class="row-chips">
+        <button class="chip" id="hapticsOn" data-haptics="on">مفعّل</button>
+        <button class="chip" id="hapticsOff" data-haptics="off">معطّل</button>
       </div>
     </div>
 
     <div class="install-hint" id="installHintText">
-      لتثبيت التطبيق على هاتفك: افتح قائمة المتصفح واختر "إضافة إلى الشاشة الرئيسية". لنقله لهاتف آخر، أرسل نفس ملف HTML عبر واتساب أو بلوتوث وكرر نفس الخطوة هناك.
+      لتثبيت التطبيق: افتح قائمة المتصفح واختر "إضافة إلى الشاشة الرئيسية".
     </div>
 
-    <button class="sheet-close" id="closeSettingsText" onclick="closeSettings()">إغلاق</button>
+    <button class="sheet-close" id="closeSettingsBtn">إغلاق</button>
   </div>
 </div>
 
-<script>
-/* ---------- i18n ---------- */
-const STRINGS = {
-  ar: {
-    dir:'rtl', speechLang:'ar-SA',
-    title:'مؤقت الكارديو', subtitle:'تمرين · راحة · تكرار',
-    ready:'جاهز', work:'تمرين', rest:'راحة',
-    round:(r,t)=>`الجولة ${r} من ${t}`,
-    workLabel:'ثانية التمرين', restLabel:'ثانية الراحة', roundsLabel:'عدد الجولات',
-    start:'ابدأ', pause:'إيقاف مؤقت', resume:'استئناف', reset:'إعادة',
-    presetTabata:'تاباتا 20/10', presetStandard:'قياسي 30/15', presetEndurance:'تحمّل 45/15',
-    done:'أحسنت! 🎉', doneRounds:(n)=>`أكملت ${n} جولات`,
-    settingsTitle:'الإعدادات', languageLabel:'اللغة', musicLabel:'الموسيقى التحفيزية',
-    musicEnergy:'طاقة', musicRock:'روك', musicOff:'إيقاف', closeBtn:'إغلاق',
-    voiceReady:'تهيأ', voiceGo:'ابدأ', voiceStop:'توقف',
-    installHint:'لتثبيت التطبيق على هاتفك: افتح قائمة المتصفح واختر "إضافة إلى الشاشة الرئيسية". لنقله لهاتف آخر، أرسل نفس ملف HTML عبر واتساب أو بلوتوث وكرر نفس الخطوة هناك.'
-  },
-  fr: {
-    dir:'ltr', speechLang:'fr-FR',
-    title:'Minuteur Cardio', subtitle:'Effort · Repos · Répétition',
-    ready:'Prêt', work:'Effort', rest:'Repos',
-    round:(r,t)=>`Round ${r} sur ${t}`,
-    workLabel:"Secondes d'effort", restLabel:'Secondes de repos', roundsLabel:'Nombre de rounds',
-    start:'Démarrer', pause:'Pause', resume:'Reprendre', reset:'Réinitialiser',
-    presetTabata:'Tabata 20/10', presetStandard:'Standard 30/15', presetEndurance:'Endurance 45/15',
-    done:'Bravo ! 🎉', doneRounds:(n)=>`${n} rounds terminés`,
-    settingsTitle:'Réglages', languageLabel:'Langue', musicLabel:'Musique motivante',
-    musicEnergy:'Énergie', musicRock:'Rock', musicOff:'Aucune', closeBtn:'Fermer',
-    voiceReady:'Prêt', voiceGo:'Go', voiceStop:'Stop',
-    installHint:"Pour installer : ouvrez le menu du navigateur et choisissez « Ajouter à l'écran d'accueil ». Pour le transférer, envoyez ce fichier HTML via WhatsApp ou Bluetooth et répétez l'étape sur l'autre téléphone."
-  },
-  en: {
-    dir:'ltr', speechLang:'en-US',
-    title:'Cardio Timer', subtitle:'Work · Rest · Repeat',
-    ready:'Ready', work:'Work', rest:'Rest',
-    round:(r,t)=>`Round ${r} of ${t}`,
-    workLabel:'Work seconds', restLabel:'Rest seconds', roundsLabel:'Rounds',
-    start:'Start', pause:'Pause', resume:'Resume', reset:'Reset',
-    presetTabata:'Tabata 20/10', presetStandard:'Standard 30/15', presetEndurance:'Endurance 45/15',
-    done:'Well done! 🎉', doneRounds:(n)=>`${n} rounds completed`,
-    settingsTitle:'Settings', languageLabel:'Language', musicLabel:'Motivational music',
-    musicEnergy:'Energy', musicRock:'Rock', musicOff:'Off', closeBtn:'Close',
-    voiceReady:'Ready', voiceGo:'Go', voiceStop:'Stop',
-    installHint:'To install: open your browser menu and choose "Add to Home Screen". To transfer, send this same HTML file via WhatsApp or Bluetooth and repeat the step on the other phone.'
-  }
-};
-
-let lang = 'ar';
-let musicStyle = 'energy';
-let settings = { work: 30, rest: 15, rounds: 5 };
-let state = { running:false, phase:'idle', timeLeft:0, round:1, interval:null };
-let audioEnabled = true;
-let activePreset = null;
-
-const RADIUS = 120;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-const ring = document.getElementById('progressRing');
-ring.style.strokeDasharray = CIRCUMFERENCE;
-ring.style.strokeDashoffset = 0;
-
-function t(){ return STRINGS[lang]; }
-
-function applyLanguageToUI(){
-  const s = t();
-  document.getElementById('htmlRoot').setAttribute('lang', lang);
-  document.getElementById('htmlRoot').setAttribute('dir', s.dir);
-  document.getElementById('titleText').textContent = s.title;
-  document.getElementById('subtitleText').textContent = s.subtitle;
-  document.getElementById('workLabelText').textContent = s.workLabel;
-  document.getElementById('restLabelText').textContent = s.restLabel;
-  document.getElementById('roundsLabelText').textContent = s.roundsLabel;
-  document.getElementById('resetBtn').textContent = s.reset;
-  document.getElementById('startBtn').textContent = state.running ? s.pause : (state.phase==='idle' ? s.start : s.resume);
-  document.getElementById('presetTabata').textContent = s.presetTabata;
-  document.getElementById('presetStandard').textContent = s.presetStandard;
-  document.getElementById('presetEndurance').textContent = s.presetEndurance;
-  document.getElementById('settingsTitleText').textContent = s.settingsTitle;
-  document.getElementById('languageLabelText').textContent = s.languageLabel;
-  document.getElementById('musicLabelText').textContent = s.musicLabel;
-  document.getElementById('musicEnergy').textContent = s.musicEnergy;
-  document.getElementById('musicRock').textContent = s.musicRock;
-  document.getElementById('musicOff').textContent = s.musicOff;
-  document.getElementById('closeSettingsText').textContent = s.closeBtn;
-  document.getElementById('installHintText').textContent = s.installHint;
-  ['langAr','langFr','langEn'].forEach(id=>document.getElementById(id).classList.remove('active'));
-  document.getElementById('lang'+lang.charAt(0).toUpperCase()+lang.slice(1)).classList.add('active');
-  updateDisplay(state.phase==='idle');
-}
-
-function setLanguage(l){
-  lang = l;
-  applyLanguageToUI();
-}
-
-function setMusicStyle(style){
-  musicStyle = style;
-  ['musicEnergy','musicRock','musicOff'].forEach(id=>document.getElementById(id).classList.remove('active'));
-  document.getElementById('music'+style.charAt(0).toUpperCase()+style.slice(1)).classList.add('active');
-  if(style === 'off'){ stopMusic(); }
-  else if(audioEnabled && state.running){ initMusic(); }
-}
-
-function openSettings(){ document.getElementById('settingsOverlay').classList.add('open'); }
-function closeSettings(){ document.getElementById('settingsOverlay').classList.remove('open'); }
-function closeSettingsOnOverlay(e){ if(e.target.id === 'settingsOverlay') closeSettings(); }
-
-/* ---------- audio engine ---------- */
-let audioCtx = null;
-let musicGain = null;
-let musicLoopId = null;
-let noiseBuffer = null;
-let nextStepTime = 0;
-let step16 = 0;
-
-function getCtx(){
-  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-function getNoiseBuffer(ctx){
-  if(noiseBuffer) return noiseBuffer;
-  const len = ctx.sampleRate * 0.3;
-  noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
-  const d = noiseBuffer.getChannelData(0);
-  for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2);
-  return noiseBuffer;
-}
-
-function beep(freq=880, duration=150, vol=0.2){
-  if(!audioEnabled) return;
-  try{
-    const ctx = getCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.frequency.value = freq;
-    osc.type = 'sine';
-    osc.connect(gain); gain.connect(ctx.destination);
-    gain.gain.setValueAtTime(vol, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration/1000);
-    osc.start(); osc.stop(ctx.currentTime + duration/1000);
-  }catch(e){}
-}
-
-function tickSound(isTock){ beep(isTock ? 700 : 1000, 90, 0.15); }
-
-function duckMusic(){
-  if(!musicGain) return;
-  const ctx = getCtx();
-  const now = ctx.currentTime;
-  musicGain.gain.cancelScheduledValues(now);
-  musicGain.gain.setValueAtTime(musicGain.gain.value, now);
-  musicGain.gain.linearRampToValueAtTime(0.10, now + 0.15);
-  musicGain.gain.linearRampToValueAtTime(0.35, now + 1.2);
-}
-
-function speak(text){
-  if(!audioEnabled) return;
-  duckMusic();
-  try{
-    if(!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = t().speechLang;
-    u.rate = 1.1;
-    u.pitch = 1.05;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
-}
-
-function playKick(t, punchy){
-  const ctx = getCtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(punchy ? 170 : 150, t);
-  osc.frequency.exponentialRampToValueAtTime(45, t + (punchy ? 0.10 : 0.14));
-  gain.gain.setValueAtTime(0.95, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + (punchy ? 0.18 : 0.22));
-  osc.connect(gain); gain.connect(musicGain);
-  osc.start(t); osc.stop(t + 0.25);
-}
-function playHat(t, open){
-  const ctx = getCtx();
-  const src = ctx.createBufferSource();
-  src.buffer = getNoiseBuffer(ctx);
-  const filt = ctx.createBiquadFilter();
-  filt.type = 'highpass'; filt.frequency.value = 8000;
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(open ? 0.12 : 0.07, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + (open ? 0.16 : 0.045));
-  src.connect(filt); filt.connect(gain); gain.connect(musicGain);
-  src.start(t); src.stop(t + 0.2);
-}
-function playClapOrSnare(t, snare){
-  const ctx = getCtx();
-  const src = ctx.createBufferSource();
-  src.buffer = getNoiseBuffer(ctx);
-  const filt = ctx.createBiquadFilter();
-  filt.type = 'bandpass'; filt.frequency.value = snare ? 2200 : 1500; filt.Q.value = 0.8;
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(snare ? 0.32 : 0.28, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + (snare ? 0.14 : 0.18));
-  src.connect(filt); filt.connect(gain); gain.connect(musicGain);
-  src.start(t); src.stop(t + 0.2);
-}
-function playBass(t, freq, dur, power){
-  const ctx = getCtx();
-  const gain = ctx.createGain();
-  const filt = ctx.createBiquadFilter();
-  filt.type = 'lowpass'; filt.frequency.value = power ? 900 : 500;
-  gain.gain.setValueAtTime(0, t);
-  gain.gain.linearRampToValueAtTime(power ? 0.22 : 0.18, t + 0.02);
-  gain.gain.linearRampToValueAtTime(0.001, t + dur);
-  filt.connect(gain); gain.connect(musicGain);
-  const osc1 = ctx.createOscillator();
-  osc1.type = 'sawtooth'; osc1.frequency.value = freq;
-  osc1.connect(filt); osc1.start(t); osc1.stop(t + dur + 0.05);
-  if(power){
-    const osc2 = ctx.createOscillator();
-    osc2.type = 'sawtooth'; osc2.frequency.value = freq * 1.5;
-    osc2.connect(filt); osc2.start(t); osc2.stop(t + dur + 0.05);
-  }
-}
-
-const BASSLINE_ENERGY = [110, 110, 130.81, 98];
-const BASSLINE_ROCK = [82.41, 82.41, 98, 87.31];
-
-function scheduleMusicLoop(){
-  if(!musicGain || !audioEnabled || musicStyle === 'off'){
-    musicLoopId = setTimeout(scheduleMusicLoop, 150);
-    return;
-  }
-  const ctx = getCtx();
-  const bpm = musicStyle === 'rock' ? 140 : 128;
-  const stepTime = 60 / bpm / 4;
-  while(nextStepTime < ctx.currentTime + 0.15){
-    const s = step16 % 16;
-    if(musicStyle === 'rock'){
-      if(s % 4 === 0) playKick(nextStepTime, true);
-      if(s === 4 || s === 12) playClapOrSnare(nextStepTime, true);
-      if(s % 4 === 2) playHat(nextStepTime, false);
-      if(s % 4 === 0) playBass(nextStepTime, BASSLINE_ROCK[Math.floor(step16/16) % BASSLINE_ROCK.length], stepTime * 3.5, true);
-    } else {
-      if(s % 4 === 0) playKick(nextStepTime, false);
-      if(s === 4 || s === 12) playClapOrSnare(nextStepTime, false);
-      if(s % 2 === 0) playHat(nextStepTime, s % 8 === 6);
-      if(s % 8 === 0) playBass(nextStepTime, BASSLINE_ENERGY[Math.floor(step16/16) % BASSLINE_ENERGY.length], stepTime * 7, false);
-    }
-    nextStepTime += stepTime;
-    step16++;
-  }
-  musicLoopId = setTimeout(scheduleMusicLoop, 40);
-}
-
-function initMusic(){
-  if(musicStyle === 'off') return;
-  const ctx = getCtx();
-  if(!musicGain){
-    musicGain = ctx.createGain();
-    musicGain.gain.value = 0.35;
-    musicGain.connect(ctx.destination);
-  }
-  if(!musicLoopId){
-    nextStepTime = ctx.currentTime + 0.05;
-    step16 = 0;
-    scheduleMusicLoop();
-  }
-}
-function stopMusic(){ if(musicLoopId){ clearTimeout(musicLoopId); musicLoopId = null; } }
-
-function toggleAudio(){
-  audioEnabled = !audioEnabled;
-  document.getElementById('soundIconOn').style.display = audioEnabled ? 'block' : 'none';
-  document.getElementById('soundIconOff').style.display = audioEnabled ? 'none' : 'block';
-  if(audioEnabled){ getCtx(); initMusic(); } else { stopMusic(); }
-}
-
-/* ---------- wake lock ---------- */
-let wakeLock = null;
-async function requestWakeLock(){
-  try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
-}
-function releaseWakeLock(){ if(wakeLock){ wakeLock.release().catch(()=>{}); wakeLock = null; } }
-
-/* ---------- presets ---------- */
-function applyPreset(work, rest, rounds){
-  if(state.running) return;
-  settings = { work, rest, rounds };
-  document.getElementById('workVal').textContent = work;
-  document.getElementById('restVal').textContent = rest;
-  document.getElementById('roundsVal').textContent = rounds;
-  updateDisplay(true);
-}
-
-/* ---------- timer logic ---------- */
-function adjust(key, delta){
-  if(state.running) return;
-  let min = key === 'rounds' ? 1 : 5;
-  settings[key] = Math.max(min, settings[key] + delta);
-  document.getElementById(key+'Val').textContent = settings[key];
-  updateDisplay(true);
-}
-
-function formatTime(s){
-  const m = Math.floor(s/60).toString().padStart(2,'0');
-  const sec = (s%60).toString().padStart(2,'0');
-  return m+':'+sec;
-}
-
-function updateDisplay(reset){
-  const s = t();
-  const phaseLabel = document.getElementById('phaseLabel');
-  const timeDisplay = document.getElementById('timeDisplay');
-  const roundLabel = document.getElementById('roundLabel');
-
-  if(reset || state.phase==='idle'){
-    phaseLabel.textContent = s.ready;
-    phaseLabel.style.color = '';
-    timeDisplay.textContent = formatTime(settings.work);
-    roundLabel.textContent = s.round(1, settings.rounds);
-    ring.style.stroke = '#B3A9D6';
-    ring.style.strokeDashoffset = 0;
-    return;
-  }
-
-  const total = state.phase === 'work' ? settings.work : settings.rest;
-  const color = state.phase === 'work' ? 'var(--pink)' : 'var(--cyan)';
-  phaseLabel.textContent = state.phase === 'work' ? s.work : s.rest;
-  phaseLabel.style.color = color;
-  ring.style.stroke = color;
-  timeDisplay.textContent = formatTime(state.timeLeft);
-  roundLabel.textContent = s.round(state.round, settings.rounds);
-  const offset = CIRCUMFERENCE * (1 - state.timeLeft/total);
-  ring.style.strokeDashoffset = offset;
-}
-
-function runTick(){
-  state.timeLeft--;
-  if(state.timeLeft <= 0){
-    if(state.phase === 'work'){
-      if(state.round >= settings.rounds){ finishWorkout(); return; }
-      state.phase = 'rest';
-      state.timeLeft = settings.rest;
-      speak(t().voiceStop);
-    } else {
-      state.round++;
-      state.phase = 'work';
-      state.timeLeft = settings.work;
-      speak(t().voiceGo);
-    }
-  } else if(state.timeLeft <= 3 && state.timeLeft >= 1){
-    tickSound(state.timeLeft % 2 === 0);
-    speak(String(state.timeLeft));
-  }
-  updateDisplay(false);
-}
-
-function toggleStart(){
-  const startBtn = document.getElementById('startBtn');
-  const s = t();
-  getCtx();
-  if(audioEnabled) initMusic();
-  if(!state.running){
-    requestWakeLock();
-    if(state.phase === 'idle'){
-      state.phase = 'work';
-      state.timeLeft = settings.work;
-      state.round = 1;
-      speak(s.voiceGo);
-    }
-    state.running = true;
-    startBtn.textContent = s.pause;
-    startBtn.className = 'btn btn-pause';
-    updateDisplay(false);
-    state.interval = setInterval(runTick, 1000);
-  } else {
-    state.running = false;
-    startBtn.textContent = s.resume;
-    startBtn.className = 'btn btn-start';
-    clearInterval(state.interval);
-    releaseWakeLock();
-  }
-}
-
-function finishWorkout(){
-  const s = t();
-  state.running = false;
-  clearInterval(state.interval);
-  releaseWakeLock();
-  state.phase = 'idle';
-  document.getElementById('phaseLabel').textContent = s.done;
-  document.getElementById('phaseLabel').style.color = 'var(--cyan)';
-  document.getElementById('timeDisplay').textContent = '✓';
-  document.getElementById('roundLabel').textContent = s.doneRounds(settings.rounds);
-  ring.style.strokeDashoffset = 0;
-  document.getElementById('startBtn').textContent = s.start;
-  document.getElementById('startBtn').className = 'btn btn-start';
-  beep(1200,300,0.25);
-}
-
-function resetTimer(){
-  state.running = false;
-  clearInterval(state.interval);
-  releaseWakeLock();
-  window.speechSynthesis && window.speechSynthesis.cancel();
-  state.phase = 'idle';
-  state.round = 1;
-  document.getElementById('startBtn').textContent = t().start;
-  document.getElementById('startBtn').className = 'btn btn-start';
-  updateDisplay(true);
-}
-
-/* init */
-document.getElementById('musicEnergy').classList.add('active');
-document.getElementById('langAr').classList.add('active');
-applyLanguageToUI();
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
-  });
-}
-</script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
